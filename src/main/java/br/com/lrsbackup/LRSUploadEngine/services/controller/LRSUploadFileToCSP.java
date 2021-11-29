@@ -24,7 +24,7 @@ import br.com.lrsbackup.LRSUploadEngine.services.model.LRSUploadFileServiceModel
 @RestController
 public class LRSUploadFileToCSP {
 
-	@Autowired
+	
 	private HttpStatus finalHttpStatus;
 	private LRSApplicationVersion appDetails = new LRSApplicationVersion();
 	private LRSRequestConsoleOut requestConsoleOut = new LRSRequestConsoleOut();
