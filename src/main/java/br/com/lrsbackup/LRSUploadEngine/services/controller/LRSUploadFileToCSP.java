@@ -17,6 +17,10 @@ import br.com.lrsbackup.LRSManager.util.LRSRequestConsoleOut;
 import br.com.lrsbackup.LRSManager.util.LRSRequestIDGenerator;
 import br.com.lrsbackup.LRSManager.util.LRSResponseInfo;
 import br.com.lrsbackup.LRSManager.util.LRSResponseMessages;
+import br.com.lrsbackup.LRSUploadEngine.cspengine.LRSCSPEngineAWS;
+import br.com.lrsbackup.LRSUploadEngine.cspengine.LRSCSPEngineAzure;
+import br.com.lrsbackup.LRSUploadEngine.cspengine.LRSCSPEngineOracle;
+import br.com.lrsbackup.LRSUploadEngine.cspengine.LRSCloudCredentials;
 import br.com.lrsbackup.LRSUploadEngine.services.model.LRSUploadFileForm;
 import br.com.lrsbackup.LRSUploadEngine.services.model.LRSUploadFileFormDAO;
 import br.com.lrsbackup.LRSUploadEngine.services.model.LRSUploadFileServiceModel;
@@ -60,7 +64,7 @@ public class LRSUploadFileToCSP {
 						if ((!pFile.getCspUserName().isEmpty()) && (!pFile.getCspUserKey().isEmpty()) ) {
 						
 							//Call uploadFunction. MultiThread!!!!!
-							//TODO TODO TODO
+							this.startUploadThreading(pFile);
 							
 							
 							finalHttpStatus = HttpStatus.OK;
@@ -98,8 +102,6 @@ public class LRSUploadFileToCSP {
 		return ResponseEntity.status(finalHttpStatus).body(response);	
 	}
 
-	
-	
 	private boolean validPublicCloud(String publicCloud) {
 		boolean lRet = false;
 		
@@ -135,4 +137,54 @@ public class LRSUploadFileToCSP {
 		this.responseInfo.setRequestID(new LRSRequestIDGenerator().getNewRequestID());
 		this.responseInfo.setResponseTime(java.time.LocalTime.now().toString().substring(0,12));
 	}
+	
+	private void startUploadThreading(LRSUploadFileForm pFile) {
+		
+		//Start multithread upload process.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+            	try {
+            		uploadToCloudProcess(pFile);
+				} catch (Exception e) {
+					//e.printStackTrace();
+				}
+            }
+			
+        }).start();
+		
+	}
+	
+	private void uploadToCloudProcess(LRSUploadFileForm pFile) {
+		
+		LRSCloudCredentials cspCredentials = new LRSCloudCredentials();
+		cspCredentials.setAccessKey(pFile.getCspUserName());
+		cspCredentials.setSecretKey(pFile.getCspUserKey());
+		
+		
+		if (pFile.getPublicCloud().equals(LRSOptionsCloudProvider.AWS.toString())) {
+			
+			LRSCSPEngineAWS awsEngine = new LRSCSPEngineAWS();
+			awsEngine.setCspCredentials(cspCredentials);
+			awsEngine.setDefAWSRegion("AZW");
+			awsEngine.setOriginalFileName(pFile.getOriginalFileName());
+			awsEngine.setDestinationPath(pFile.getDestinationFileName());
+			awsEngine.uploadFileToCloud();
+			
+			//TODO TODO TODO
+			
+		} else if (pFile.getPublicCloud().equals(LRSOptionsCloudProvider.AZURE.toString())) {
+			
+			LRSCSPEngineAzure azureEngine = new LRSCSPEngineAzure();
+			//TODO TODO TODO
+			
+		} else if (pFile.getPublicCloud().equals(LRSOptionsCloudProvider.ORACLE.toString())) {
+			
+			LRSCSPEngineOracle oracleEngine = new LRSCSPEngineOracle();
+			//TODO TODO TODO
+			
+		}
+		
+	}
+	
 }
