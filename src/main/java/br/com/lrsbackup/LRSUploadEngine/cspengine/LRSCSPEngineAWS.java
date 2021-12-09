@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.lrsbackup.LRSManager.util.LRSConsoleOut;
+import br.com.lrsbackup.LRSManager.util.LRSOperationalSystem;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -54,33 +59,62 @@ public class LRSCSPEngineAWS {
 	}
 
 	public String uploadFileToCloud() {
-        Region region = Region.US_EAST_2;
-        S3Client s3 = S3Client.builder().region(region).build();
+		String fileToUpload = originalFileName.substring(1,originalFileName.length());
+		Region region = Region.US_EAST_2;
+
+		AwsBasicCredentials awsCreds = AwsBasicCredentials.create(cspCredentials.getAccessKey(),cspCredentials.getSecretKey());
+		S3Client s3 = S3Client.builder()
+        		.region(region)
+        		.credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+        		.build();
         
         try {
 
             Map<String, String> metadata = new HashMap<>();
-            metadata.put("x-amz-meta-myVal", "test");
+            metadata.put("x-amz-meta-myVal", "LRSBackup Application");
 
             PutObjectRequest putOb = PutObjectRequest.builder()
-                    .bucket("myfreezefiles")
-                    .key(originalFileName)
+                    .bucket("myfreezefiles") //TODO - PLEASE hard coded NOOOOO Mr Cesar!
+                    .key(fileToUpload)
                     .metadata(metadata)
                     .build();
 
-            PutObjectResponse response = s3.putObject(putOb, RequestBody.fromBytes(getObjectFile(destinationPath)));
-
-           return response.eTag();
+            
+            PutObjectResponse response = s3.putObject(putOb, RequestBody.fromBytes(getObjectFile(originalFileName)));
+            new LRSConsoleOut(response.eTag());
+            
+            return response.eTag();
 
         } catch (S3Exception e) {
-            System.err.println(e.getMessage());
+            new LRSConsoleOut("ERROR WHILE TRYING UPLOAD FILE ".concat(originalFileName).concat(" to AWS S3 Bucket"));
+        	System.err.println(e.getMessage());
             System.exit(1);
         }
         return "";
         
 	}
+	
+	private String getOnlyFileName(String originalFileName) {
+		String delimiter = new String();
+		String onlyFileName = new String();
+		LRSOperationalSystem mySO = new LRSOperationalSystem();
+		
+		if (mySO.isWindows()) {
+			delimiter = "\\";
+		} else {
+			delimiter = "/";
+		}
+		
+		int initialPoint = originalFileName.lastIndexOf(delimiter);
+		int finalPoint = originalFileName.length();
+		
+		onlyFileName = originalFileName.substring(initialPoint,finalPoint);	
+		onlyFileName = onlyFileName.replace(delimiter,"");
+		
+		return onlyFileName;
+	}
 
-	   private static byte[] getObjectFile(String filePath) {
+	private static byte[] getObjectFile(String filePath) {
 
 	        FileInputStream fileInputStream = null;
 	        byte[] bytesArray = null;
