@@ -62,6 +62,8 @@ public class LRSCSPEngineAWS {
 		String fileToUpload = originalFileName.substring(1,originalFileName.length());
 		Region region = Region.US_EAST_2;
 
+	
+		
 		AwsBasicCredentials awsCreds = AwsBasicCredentials.create(cspCredentials.getAccessKey(),cspCredentials.getSecretKey());
 		S3Client s3 = S3Client.builder()
         		.region(region)
@@ -73,6 +75,8 @@ public class LRSCSPEngineAWS {
             Map<String, String> metadata = new HashMap<>();
             metadata.put("x-amz-meta-myVal", "LRSBackup Application");
 
+        	byte[] objectFile = new LRSOperationalSystem().getObjectFile(originalFileName);
+            
             PutObjectRequest putOb = PutObjectRequest.builder()
                     .bucket("myfreezefiles") //TODO - PLEASE hard coded NOOOOO Mr Cesar!
                     .key(fileToUpload)
@@ -80,7 +84,7 @@ public class LRSCSPEngineAWS {
                     .build();
 
             
-            PutObjectResponse response = s3.putObject(putOb, RequestBody.fromBytes(getObjectFile(originalFileName)));
+            PutObjectResponse response = s3.putObject(putOb, RequestBody.fromBytes(objectFile));
             new LRSConsoleOut(response.eTag());
             
             return response.eTag();
@@ -93,50 +97,7 @@ public class LRSCSPEngineAWS {
         return "";
         
 	}
-	
-	private String getOnlyFileName(String originalFileName) {
-		String delimiter = new String();
-		String onlyFileName = new String();
-		LRSOperationalSystem mySO = new LRSOperationalSystem();
-		
-		if (mySO.isWindows()) {
-			delimiter = "\\";
-		} else {
-			delimiter = "/";
-		}
-		
-		int initialPoint = originalFileName.lastIndexOf(delimiter);
-		int finalPoint = originalFileName.length();
-		
-		onlyFileName = originalFileName.substring(initialPoint,finalPoint);	
-		onlyFileName = onlyFileName.replace(delimiter,"");
-		
-		return onlyFileName;
-	}
 
-	private static byte[] getObjectFile(String filePath) {
 
-	        FileInputStream fileInputStream = null;
-	        byte[] bytesArray = null;
-
-	        try {
-	            File file = new File(filePath);
-	            bytesArray = new byte[(int) file.length()];
-	            fileInputStream = new FileInputStream(file);
-	            fileInputStream.read(bytesArray);
-
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        } finally {
-	            if (fileInputStream != null) {
-	                try {
-	                    fileInputStream.close();
-	                } catch (IOException e) {
-	                    e.printStackTrace();
-	                }
-	            }
-	        }
-	        return bytesArray;
-	    }
 	
 }
