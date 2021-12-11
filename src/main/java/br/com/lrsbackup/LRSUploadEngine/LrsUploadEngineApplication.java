@@ -2,8 +2,9 @@ package br.com.lrsbackup.LRSUploadEngine;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
-@SpringBootApplication
+@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 public class LrsUploadEngineApplication {
 
 	public static void main(String[] args) {
