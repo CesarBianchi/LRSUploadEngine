@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.lrsbackup.LRSManager.enums.LRSOptionsCloudProvider;
+import br.com.lrsbackup.LRSManager.enums.LRSOptionsFileStatus;
 import br.com.lrsbackup.LRSManager.util.LRSApplicationVersion;
 import br.com.lrsbackup.LRSManager.util.LRSRequestConsoleOut;
 import br.com.lrsbackup.LRSManager.util.LRSRequestIDGenerator;
@@ -24,6 +25,7 @@ import br.com.lrsbackup.LRSUploadEngine.cspengine.LRSCloudCredentials;
 import br.com.lrsbackup.LRSUploadEngine.services.model.LRSUploadFileForm;
 import br.com.lrsbackup.LRSUploadEngine.services.model.LRSUploadFileFormDAO;
 import br.com.lrsbackup.LRSUploadEngine.services.model.LRSUploadFileServiceModel;
+import br.com.lrsbackup.LRSUploadEngine.utils.LRSUploadStatus;
 
 @RestController
 public class LRSUploadFileToCSP {
@@ -161,6 +163,8 @@ public class LRSUploadFileToCSP {
 		cspCredentials.setAccessKey(pFile.getCspUserName());
 		cspCredentials.setSecretKey(pFile.getCspUserKey());
 		
+		//Change the status to UPLOADING
+		new LRSUploadStatus().changeFileStatusToUploading(pFile,LRSOptionsFileStatus.UPLOADING);
 		
 		if (pFile.getPublicCloud().equals(LRSOptionsCloudProvider.AWS.toString())) {
 			
@@ -169,9 +173,8 @@ public class LRSUploadFileToCSP {
 			awsEngine.setDefAWSRegion("AZW");
 			awsEngine.setOriginalFileName(pFile.getOriginalFileName());
 			awsEngine.setDestinationPath(pFile.getDestinationFileName());
+			awsEngine.setBucketName(pFile.getStorageRepoName());
 			awsEngine.uploadFileToCloud();
-			
-			//TODO TODO TODO
 			
 		} else if (pFile.getPublicCloud().equals(LRSOptionsCloudProvider.AZURE.toString())) {
 			
@@ -184,6 +187,9 @@ public class LRSUploadFileToCSP {
 			//TODO TODO TODO
 			
 		}
+		
+		//Change the status to UPLOADED_STANDARD
+		new LRSUploadStatus().changeFileStatusToUploading(pFile,LRSOptionsFileStatus.UPLOADED_STANDARD);
 		
 	}
 	

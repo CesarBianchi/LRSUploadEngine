@@ -4,16 +4,18 @@ public class LRSUploadFileFormDAO {
 	private String originalFileName = new String();
 	private String destinationFileName = new String();
 	private String publicCloud = new String();
+	private String storageRepositoryName = new String();
 	
 	public LRSUploadFileFormDAO() {
 		super();
 	}
 
-	public LRSUploadFileFormDAO(String originalFileName, String destinationFileName, String publicCloud) {
+	public LRSUploadFileFormDAO(String originalFileName, String destinationFileName, String publicCloud, String storageName) {
 		super();
 		this.originalFileName = originalFileName;
 		this.destinationFileName = destinationFileName;
 		this.publicCloud = publicCloud;
+		this.storageRepositoryName = storageName;
 	}
 
 	public String getOriginalFileName() {
@@ -40,6 +42,14 @@ public class LRSUploadFileFormDAO {
 		this.publicCloud = publicCloud;
 	}
 	
+	public String getStorageRepositoryName() {
+		return storageRepositoryName;
+	}
+
+	public void setStorageRepositoryName(String storageRepositoryName) {
+		this.storageRepositoryName = storageRepositoryName;
+	}
+
 	public LRSUploadFileFormDAO convert(LRSUploadFileForm pFileFull) {
 		
 		LRSUploadFileFormDAO localDao = new LRSUploadFileFormDAO();
@@ -47,6 +57,7 @@ public class LRSUploadFileFormDAO {
 		localDao.setDestinationFileName(pFileFull.getDestinationFileName());
 		localDao.setOriginalFileName(pFileFull.getOriginalFileName());
 		localDao.setPublicCloud(pFileFull.getPublicCloud());
+		localDao.setStorageRepositoryName(pFileFull.getStorageRepoName());
 		
 		return localDao;
 	}

@@ -24,7 +24,7 @@ public class LRSCSPEngineAWS {
 	private String originalFileName = new String();
 	private String defAWSRegion = new String();
 	private String destinationPath = new String();
-
+	private String bucketName = new String();
 	
 	public LRSCloudCredentials getCspCredentials() {
 		return cspCredentials;
@@ -58,8 +58,16 @@ public class LRSCSPEngineAWS {
 		this.destinationPath = destinationPath;
 	}
 
+	public String getBucketName() {
+		return bucketName;
+	}
+
+	public void setBucketName(String bucketName) {
+		this.bucketName = bucketName;
+	}
+
 	public String uploadFileToCloud() {
-		String fileToUpload = originalFileName.substring(1,originalFileName.length());
+		String fileToUpload = this.originalFileName.substring(1,this.originalFileName.length());
 		Region region = Region.US_EAST_2;
 
 	
@@ -78,7 +86,7 @@ public class LRSCSPEngineAWS {
         	byte[] objectFile = new LRSOperationalSystem().getObjectFile(originalFileName);
             
             PutObjectRequest putOb = PutObjectRequest.builder()
-                    .bucket("myfreezefiles") //TODO - PLEASE hard coded NOOOOO Mr Cesar!
+                    .bucket(this.bucketName)
                     .key(fileToUpload)
                     .metadata(metadata)
                     .build();

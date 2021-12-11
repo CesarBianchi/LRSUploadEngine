@@ -5,6 +5,7 @@ public class LRSUploadFileForm {
 	private String originalFileName = new String();
 	private String destinationFileName = new String();
 	private String publicCloud = new String();
+	private String storageRepoName = new String();
 	private String cspUserName = new String();
 	private String cspUserKey = new String();
 		
@@ -12,10 +13,11 @@ public class LRSUploadFileForm {
 		super();
 	}
 	
-	public LRSUploadFileForm(String originalFileName, String destinationFileName, String publicCloud) {
+	public LRSUploadFileForm(String originalFileName, String destinationFileName, String publicCloud, String storageName) {
 		this.originalFileName = originalFileName;
 		this.destinationFileName = destinationFileName;
 		this.publicCloud = publicCloud;
+		this.storageRepoName = storageName;
 	}
 	
 	public LRSUploadFileForm(String originalFileName, String destinationFileName, String publicCloud, String cspUserName, String cspUserKey) {
@@ -64,6 +66,14 @@ public class LRSUploadFileForm {
 
 	public void setCspUserKey(String cspUserKey) {
 		this.cspUserKey = cspUserKey;
+	}
+
+	public String getStorageRepoName() {
+		return storageRepoName;
+	}
+
+	public void setStorageRepoName(String storageRepoName) {
+		this.storageRepoName = storageRepoName;
 	}
 	
 	
