@@ -7,4 +7,4 @@ RUN yum install -y \
        java-1.8.0-openjdk \
        java-1.8.0-openjdk-devel
 	   
-CMD ["java","-jar","/home/LRSUploadEngine/LRSUploadEngine.jar"]
+CMD ["java","-jar","-Dserver.port=8081","/home/LRSUploadEngine/LRSUploadEngine.jar"]
