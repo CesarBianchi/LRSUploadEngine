@@ -1,4 +1,4 @@
-package br.com.lrsbackup.LRSUploadEngine.cspengine;
+package br.com.lrsbackup.LRSUploadEngine.services.controller;
 
 public class LRSCloudCredentials {
 	

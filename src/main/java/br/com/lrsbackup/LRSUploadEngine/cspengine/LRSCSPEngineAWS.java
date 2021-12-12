@@ -8,6 +8,7 @@ import java.util.Map;
 
 import br.com.lrsbackup.LRSManager.util.LRSConsoleOut;
 import br.com.lrsbackup.LRSManager.util.LRSOperationalSystem;
+import br.com.lrsbackup.LRSUploadEngine.services.controller.LRSCloudCredentials;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -67,7 +68,7 @@ public class LRSCSPEngineAWS {
 	}
 
 	public String uploadFileToCloud() {
-		String fileToUpload = this.originalFileName.substring(1,this.originalFileName.length());
+		String fileToUpload = this.destinationPath.substring(1,this.destinationPath.length());
 		Region region = Region.US_EAST_2;
 
 	
@@ -83,7 +84,7 @@ public class LRSCSPEngineAWS {
             Map<String, String> metadata = new HashMap<>();
             metadata.put("x-amz-meta-myVal", "LRSBackup Application");
 
-        	byte[] objectFile = new LRSOperationalSystem().getObjectFile(originalFileName);
+        	byte[] objectFile = new LRSOperationalSystem().getObjectFile(this.originalFileName);
             
             PutObjectRequest putOb = PutObjectRequest.builder()
                     .bucket(this.bucketName)
