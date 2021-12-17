@@ -14,7 +14,7 @@ public class LRSManagerAddress {
 		boolean inEclipse = !(System.getenv("eclipse42") == null);
 		
 		if (inEclipse) {
-			this.LRSManagerURI = "http://127.0.0.1:8080/LRSManager";
+			this.LRSManagerURI = "http://127.0.0.1:6001/LRSManager";
 		} else {
 			this.LRSManagerURI = "http://192.168.0.101:6001/LRSManager"; //TODO - Not HARDCODED
 			//this.LRSManagerURI = "http://127.0.0.1:8080/LRSManager";
