@@ -1,5 +1,7 @@
 # LRSUploadEngine
 
+## This project has reached its end of life, and is now just preserved here for posterity.
+
 LRSUploadEngine is a part of LRSBackup Solution, responsible to perform upload files and make all comunications with cloud public providers, as Amazon AWS, Azure and Oracle Cloud, working in pair with LRSManager.
 Important Notice: Coming soon, I'll add Google Cloud Storage also. Nowadays, just Amazon AWS are fully available.
 
